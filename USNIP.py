@@ -1,6 +1,9 @@
 # coding=utf-8
 import jieba
 import pandas as pd
+from wordcloud import WordCloud, ImageColorGenerator, STOPWORDS
+from scipy.misc import imread
+import matplotlib.pyplot as plt
 
 jieba.load_userdict("userdict.txt")
 
@@ -66,7 +69,6 @@ class USNIP(object):
     def create_total_df(self):
         _2015_df = pd.DataFrame(sorted(self._2015_keyword.items(), key=lambda x: x[1], reverse=True))
         _2015_df.columns = ['2015关键字', '2015数量']
-
         _2016_df = pd.DataFrame(sorted(self._2016_keyword.items(), key=lambda x: x[1], reverse=True))
         _2016_df.columns = ['2016关键字', '2016数量']
         _2017_df = pd.DataFrame(sorted(self._2017_keyword.items(), key=lambda x: x[1], reverse=True))
@@ -78,4 +80,37 @@ class USNIP(object):
         all_year_df['2016数量'].astype(int)
         print(all_year_df)
         all_year_df.to_excel('result/关键字表.xlsx')
-        pass
+        print("Finish")
+
+    def drawWordCloud(self, word_text, filename):
+        mask = imread('pic.png')
+        my_wordcloud = WordCloud(
+            background_color='white',  # 设置背景颜色
+            mask=mask,  # 设置背景图片
+            max_words=2000,  # 设置最大现实的字数
+            stopwords=STOPWORDS,  # 设置停用词
+            font_path='/System/Library/Fonts/Hiragino Sans GB.ttc',  # 设置字体格式，如不设置显示不了中文
+            max_font_size=50,  # 设置字体最大值
+            random_state=30,  # 设置有多少种随机生成状态，即有多少种配色方案
+            scale=1.5
+        ).fit_words(word_text)
+        image_colors = ImageColorGenerator(mask)
+        my_wordcloud.recolor(color_func=image_colors)
+        # 保存图片
+        my_wordcloud.to_file(filename=filename)
+        # 以下代码显示图片
+        # plt.imshow(my_wordcloud)
+        # plt.axis("off")
+        # plt.show()
+
+    def multiply_ten(self):
+        for index, value in self._2015_keyword.items():
+            self._2015_keyword[index] = value ** 2
+
+        for index, value in self._2016_keyword.items():
+            self._2016_keyword[index] = value ** 2
+
+        for index, value in self._2017_keyword.items():
+            self._2017_keyword[index] = value ** 2
+
+

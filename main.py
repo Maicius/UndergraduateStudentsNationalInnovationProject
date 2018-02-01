@@ -24,6 +24,9 @@ if __name__ == '__main__':
     _2017_data = pd.read_excel('2017.xlsx', header=None)
     usnip._2017_keyword = usnip.calculate_keyword(_2017_data.iloc[3:, 3:4])
     # get_keyword_diff(usnip)
-    get_total_key_word(usnip)
-
+    # get_total_key_word(usnip)
+    usnip.multiply_ten()
+    usnip.drawWordCloud(usnip._2015_keyword, '2015_word_cloud.jpg')
+    usnip.drawWordCloud(usnip._2016_keyword, '2016_word_cloud.jpg')
+    usnip.drawWordCloud(usnip._2017_keyword, '2017_word_cloud.jpg')
     print('finish')
