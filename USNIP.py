@@ -87,7 +87,7 @@ class USNIP(object):
         my_wordcloud = WordCloud(
             background_color='white',  # 设置背景颜色
             mask=mask,  # 设置背景图片
-            max_words=2000,  # 设置最大现实的字数
+            max_words=5000,  # 设置最大显示的字数
             stopwords=STOPWORDS,  # 设置停用词
             font_path='/System/Library/Fonts/Hiragino Sans GB.ttc',  # 设置字体格式，如不设置显示不了中文
             max_font_size=50,  # 设置字体最大值
