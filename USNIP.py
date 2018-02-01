@@ -73,8 +73,9 @@ class USNIP(object):
         _2017_df.columns = ['2017关键字', '2017数量']
         all_year_df = pd.concat([_2015_df, _2016_df], axis=1)
         all_year_df = pd.concat([all_year_df, _2017_df], axis=1)
-        all_year_df.fillna(0)
+        all_year_df = all_year_df.iloc[0:100]
         all_year_df['2015数量'].astype(int)
         all_year_df['2016数量'].astype(int)
         print(all_year_df)
+        all_year_df.to_excel('result/关键字表.xlsx')
         pass
