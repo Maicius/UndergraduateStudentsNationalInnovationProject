@@ -17,9 +17,9 @@ def count_frequency(data_arr):
 
 class USNIP(object):
     def __init__(self):
-        self._2015_keyword = []
-        self._2016_keyword = []
-        self._2017_keyword = []
+        self._2015_keyword = {}
+        self._2016_keyword = {}
+        self._2017_keyword = {}
         self.waste_words = "基于 研究 技术 方法 理论 为例 实验 影响 模拟 作用 应用 工程 探究 探索 浅析 机制 坚定 分析 调研 构建 特征 " \
                            "设计 方案 新型 及其 系统 公司 组织 平台 用于 对策 不同 使用 调查 合作 辅助 我国 地区 " \
                            "制备 大学生 开发 合成 实现 检测 中国 高校 研制 优化 服务 有限 项目 发展 装置 问题 现状 一种 结构 模型 性能 " \
@@ -33,9 +33,6 @@ class USNIP(object):
         _keyword = list(jieba.cut(project_names, cut_all=False))
         _keyword = filter(self.remove_waste, _keyword)
         _keyword_dict = count_frequency(_keyword)
-        # _keyword_tuple = sorted(_keyword_dict.items(), key=lambda x: x[1], reverse=True)
-        # print(_keyword_tuple)
-        # return _keyword_tuple
         return _keyword_dict
 
     def generate_waste_words_array(self):
@@ -65,3 +62,19 @@ class USNIP(object):
                                             index=None).reset_index()
 
         return _2016_2017_diff_dict, _2015_2016_diff_dict
+
+    def create_total_df(self):
+        _2015_df = pd.DataFrame(sorted(self._2015_keyword.items(), key=lambda x: x[1], reverse=True))
+        _2015_df.columns = ['2015关键字', '2015数量']
+
+        _2016_df = pd.DataFrame(sorted(self._2016_keyword.items(), key=lambda x: x[1], reverse=True))
+        _2016_df.columns = ['2016关键字', '2016数量']
+        _2017_df = pd.DataFrame(sorted(self._2017_keyword.items(), key=lambda x: x[1], reverse=True))
+        _2017_df.columns = ['2017关键字', '2017数量']
+        all_year_df = pd.concat([_2015_df, _2016_df], axis=1)
+        all_year_df = pd.concat([all_year_df, _2017_df], axis=1)
+        all_year_df.fillna(0)
+        all_year_df['2015数量'].astype(int)
+        all_year_df['2016数量'].astype(int)
+        print(all_year_df)
+        pass

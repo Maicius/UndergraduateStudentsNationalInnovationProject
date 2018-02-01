@@ -1,6 +1,17 @@
 import pandas as pd
 from USNIP import USNIP
 
+def get_keyword_diff(usnip):
+    _2016_2017_diff_df, _2015_2016_diff_df = usnip.calculate_rank_diff()
+    print(_2016_2017_diff_df)
+    _2016_2017_diff_df.columns = ['排名', '关键字', '2016 - 2017年增加值']
+    _2015_2016_diff_df.columns = ['排名', '关键字', '2015 - 2016年增加值']
+    _2015_2016_diff_df.to_excel('result/2015-2016_diff.xlsx')
+    _2016_2017_diff_df.to_excel('result/2016-2017_diff.xlsx')
+
+def get_total_key_word(usnip):
+    usnip.create_total_df()
+
 if __name__ == '__main__':
     usnip = USNIP()
     # 获取数据
@@ -12,11 +23,7 @@ if __name__ == '__main__':
 
     _2017_data = pd.read_excel('2017.xlsx', header=None)
     usnip._2017_keyword = usnip.calculate_keyword(_2017_data.iloc[3:, 3:4])
+    # get_keyword_diff(usnip)
+    get_total_key_word(usnip)
 
-    _2016_2017_diff_df, _2015_2016_diff_df = usnip.calculate_rank_diff()
-    print(_2016_2017_diff_df)
-    _2016_2017_diff_df.columns = ['排名', '关键字', '2016 - 2017年增加值']
-    _2015_2016_diff_df.columns = ['排名', '关键字', '2015 - 2016年增加值']
-    _2015_2016_diff_df.to_excel('result/2015-2016_diff.xlsx')
-    _2016_2017_diff_df.to_excel('result/2016-2017_diff.xlsx')
     print('finish')
