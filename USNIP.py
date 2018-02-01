@@ -23,7 +23,7 @@ class USNIP(object):
         self.waste_words = "基于 研究 技术 方法 理论 为例 实验 影响 模拟 作用 应用 工程 探究 探索 浅析 机制 坚定 分析 调研 构建 特征 " \
                            "设计 方案 新型 及其 系统 公司 组织 平台 用于 对策 不同 使用 调查 合作 辅助 我国 地区 " \
                            "制备 大学生 开发 合成 实现 检测 中国 高校 研制 优化 服务 有限 项目 发展 装置 问题 现状 一种 结构 模型 性能 " \
-                           "模式 有限公司 试验 比较 推广 利用 特性 因素 机理 建设"
+                           "模式 有限公司 试验 比较 推广 利用 特性 因素 机理 建设 算法 背景 现状及 表达 快速 吸附"
         self._2015_keyword_dict = {}
         self.generate_waste_words_array()
 
@@ -33,9 +33,10 @@ class USNIP(object):
         _keyword = list(jieba.cut(project_names, cut_all=False))
         _keyword = filter(self.remove_waste, _keyword)
         _keyword_dict = count_frequency(_keyword)
-        _keyword_tuple = sorted(_keyword_dict.items(), key=lambda x: x[1], reverse=True)
-        print(_keyword_tuple)
-        return _keyword_tuple
+        # _keyword_tuple = sorted(_keyword_dict.items(), key=lambda x: x[1], reverse=True)
+        # print(_keyword_tuple)
+        # return _keyword_tuple
+        return _keyword_dict
 
     def generate_waste_words_array(self):
         self.waste_words = set(self.waste_words.split(' '))
@@ -45,13 +46,22 @@ class USNIP(object):
             return ''
         return word
 
-    def reset_index_name(self):
-        self._2015_keyword.columns = ['rank', 'word', 'val']
-        self._2016_keyword.columns = ['rank', 'word', 'val']
-        self._2017_keyword.columns = ['rank', 'word', 'val']
-
     def calculate_rank_diff(self):
-        all_unique_words = pd.concat(
-            [self._2015_keyword['word'], self._2016_keyword['word'], self._2017_keyword['word']],
-            ignore_index=True).drop_duplicates()
-        print(all_unique_words)
+        _2016_2017_diff_dict = {}
+        for word in self._2017_keyword:
+            if word in self._2016_keyword:
+                _2016_2017_diff_dict[word] = self._2017_keyword[word] - self._2016_keyword[word]
+            else:
+                _2016_2017_diff_dict[word] = self._2017_keyword[word]
+        _2015_2016_diff_dict = {}
+        for word in self._2016_keyword:
+            if word in self._2015_keyword:
+                _2015_2016_diff_dict[word] = self._2016_keyword[word] - self._2015_keyword[word]
+            else:
+                _2015_2016_diff_dict[word] = self._2016_keyword[word]
+        _2016_2017_diff_dict = pd.DataFrame(sorted(_2016_2017_diff_dict.items(), key=lambda x: x[1], reverse=True),
+                                            index=None).reset_index()
+        _2015_2016_diff_dict = pd.DataFrame(sorted(_2015_2016_diff_dict.items(), key=lambda x: x[1], reverse=True),
+                                            index=None).reset_index()
+
+        return _2016_2017_diff_dict, _2015_2016_diff_dict
