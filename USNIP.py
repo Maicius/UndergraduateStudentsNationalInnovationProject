@@ -23,12 +23,16 @@ class USNIP(object):
         self._2015_keyword = {}
         self._2016_keyword = {}
         self._2017_keyword = {}
+        self._2015_avg_people = []
+        self._2016_avg_people = []
+        self._2017_avg_people = []
+
         self.waste_words = "基于 研究 技术 方法 理论 为例 实验 影响 模拟 作用 应用 工程 探究 探索 浅析 机制 坚定 分析 调研 构建 特征 " \
                            "设计 方案 新型 及其 系统 公司 组织 平台 用于 对策 不同 使用 调查 合作 辅助 我国 地区 " \
                            "制备 大学生 开发 合成 实现 检测 中国 高校 研制 优化 服务 有限 项目 发展 装置 问题 现状 一种 结构 模型 性能 " \
                            "模式 有限公司 试验 比较 推广 利用 特性 因素 机理 建设 算法 背景 现状及 表达 快速 吸附"
-        self._2015_keyword_dict = {}
         self.generate_waste_words_array()
+
 
     def calculate_keyword(self, data):
         project_names = data.sum(axis=0).values[0]
@@ -82,6 +86,15 @@ class USNIP(object):
         all_year_df.to_excel('result/关键字表.xlsx')
         print("Finish")
 
+    def create_all_avg_people_df(self):
+        self._2015_avg_people.columns = ['2015高校', '2015平均人数']
+        self._2016_avg_people.columns = ['2016高校', '2016平均人数']
+        self._2017_avg_people.columns = ['2017高校', '2017平均人数']
+        all_year_df = pd.concat([self._2015_avg_people, self._2016_avg_people], axis=1)
+        all_year_df = pd.concat([all_year_df, self._2017_avg_people], axis=1)
+        all_year_df.to_excel('result/平均人数表.xlsx')
+        print('Finish')
+
     def drawWordCloud(self, word_text, filename):
         mask = imread('pic.png')
         my_wordcloud = WordCloud(
@@ -113,4 +126,16 @@ class USNIP(object):
         for index, value in self._2017_keyword.items():
             self._2017_keyword[index] = value ** 2
 
-
+    def calculate_avg_people(self, data):
+        university_tuple = []
+        data.columns = ['university', 'num']
+        unique_university = pd.unique(data['university'].values)
+        for university in unique_university:
+            avg_people = data[data.university == university]['num'].astype(int).mean()
+            university_tuple.append((university, round(avg_people, 0)))
+        university_df = pd.DataFrame(university_tuple)
+        university_df.columns = ['大学', '平均人数']
+        university_df.sort_values(by='平均人数', inplace=True, ascending=True)
+        university_df = university_df.reset_index().drop(['index'], axis=1)
+        print(university_df)
+        return university_df
