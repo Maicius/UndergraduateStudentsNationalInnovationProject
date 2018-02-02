@@ -23,15 +23,14 @@ def get_avg_people_by_univer():
     usnip._2015_avg_people_df = usnip.calculate_avg_people_by_univer(_2015_data[[1, 7]].loc[3:])
     usnip._2016_avg_people_df = usnip.calculate_avg_people_by_univer(_2016_data[[3, 9]].loc[3:])
     usnip._2017_avg_people_df = usnip.calculate_avg_people_by_univer(_2017_data[[1, 7]].loc[3:])
+    usnip.create_all_avg_people_df_by_univer()
 
-    usnip.create_all_avg_people_df()
 
 def get_avg_people_by_num():
     usnip._2015_avg_people_df = usnip.calculate_avg_people_by_num(_2015_data[[7]].loc[3:])
     usnip._2016_avg_people_df = usnip.calculate_avg_people_by_num(_2016_data[[9]].loc[3:])
     usnip._2017_avg_people_df = usnip.calculate_avg_people_by_num(_2017_data[[7]].loc[3:])
-
-    usnip.create_all_avg_people_df()
+    usnip.create_all_avg_people_df_by_num()
 
 
 def draw_word_cloud():

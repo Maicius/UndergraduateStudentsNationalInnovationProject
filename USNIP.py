@@ -85,13 +85,22 @@ class USNIP(object):
         all_year_df.to_excel('result/关键字表.xlsx')
         print("Finish")
 
-    def create_all_avg_people_df(self):
+    def create_all_avg_people_df_by_univer(self):
         self._2015_avg_people_df.columns = ['2015高校', '2015平均人数']
         self._2016_avg_people_df.columns = ['2016高校', '2016平均人数']
         self._2017_avg_people_df.columns = ['2017高校', '2017平均人数']
         all_year_df = pd.concat([self._2015_avg_people_df, self._2016_avg_people_df], axis=1)
         all_year_df = pd.concat([all_year_df, self._2017_avg_people_df], axis=1)
         all_year_df.to_excel('result/平均人数表.xlsx')
+        print('Finish')
+
+    def create_all_avg_people_df_by_num(self):
+        self._2015_avg_people_df.columns = ['项目参与人数', '数量']
+        self._2016_avg_people_df.columns = ['项目参与人数', '数量']
+        self._2017_avg_people_df.columns = ['项目参与人数', '数量']
+        all_year_df = pd.concat([self._2015_avg_people_df, self._2016_avg_people_df], axis=1)
+        all_year_df = pd.concat([all_year_df, self._2017_avg_people_df], axis=1)
+        all_year_df.to_excel('result/项目参与人数表.xlsx')
         print('Finish')
 
     def drawWordCloud(self, word_text, filename):
@@ -143,13 +152,14 @@ class USNIP(object):
         data['val'] = 1
         avg_people_tuple = []
         data.columns = ['num', 'val']
-        unique_num = pd.unique(data['num'].astype(int).values)
+        data.astype(int, copy=False)
+        unique_num = pd.unique(data['num'].values)
         for num in unique_num:
-            avg_num = data[data.num == num]['val'].astype(int).sum(axis=0)
+            avg_num = data[data.num == num]['val'].sum(axis=0)
             avg_people_tuple.append((num, avg_num))
         avg_people_df = pd.DataFrame(avg_people_tuple)
         avg_people_df.columns = ['参数人数', '项目数量']
-        avg_people_df.sort_values(by='项目数量', inplace=True, ascending=True)
+        avg_people_df.sort_values(by='项目数量', inplace=True, ascending=False)
         avg_people_df = avg_people_df.reset_index().drop(['index'], axis=1)
         print(avg_people_df)
         return avg_people_df
