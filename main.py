@@ -43,9 +43,9 @@ def draw_word_cloud():
 if __name__ == '__main__':
     usnip = USNIP()
     # 获取数据
-    _2015_data = pd.read_excel('2015.xls', header=None)
-    _2016_data = pd.read_excel('2016.xlsx', header=None, sheet_name='信息表')
-    _2017_data = pd.read_excel('2017.xlsx', header=None)
+    _2015_data = pd.read_excel('raw_data/2015.xls', header=None)
+    _2016_data = pd.read_excel('raw_data/2016.xlsx', header=None, sheet_name='信息表')
+    _2017_data = pd.read_excel('raw_data/2017.xlsx', header=None)
 
     # 计算关键字
     # get_keyword_diff()
