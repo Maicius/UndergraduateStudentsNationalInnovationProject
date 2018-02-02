@@ -19,13 +19,18 @@ def get_total_key_word():
     usnip.create_total_df()
 
 
-def get_avg_people():
-    usnip._2015_avg_people = usnip.calculate_avg_people(_2015_data[[1, 7]].loc[3:])
-    usnip._2016_avg_people = usnip.calculate_avg_people(_2016_data[[3, 9]].loc[3:])
-    usnip._2017_avg_people = usnip.calculate_avg_people(_2017_data[[1, 7]].loc[3:])
-    usnip.calculate_avg_people(usnip._2015_avg_people)
-    usnip.calculate_avg_people(usnip._2016_avg_people)
-    usnip.calculate_avg_people(usnip._2017_avg_people)
+def get_avg_people_by_univer():
+    usnip._2015_avg_people_df = usnip.calculate_avg_people_by_univer(_2015_data[[1, 7]].loc[3:])
+    usnip._2016_avg_people_df = usnip.calculate_avg_people_by_univer(_2016_data[[3, 9]].loc[3:])
+    usnip._2017_avg_people_df = usnip.calculate_avg_people_by_univer(_2017_data[[1, 7]].loc[3:])
+
+    usnip.create_all_avg_people_df()
+
+def get_avg_people_by_num():
+    usnip._2015_avg_people_df = usnip.calculate_avg_people_by_num(_2015_data[[7]].loc[3:])
+    usnip._2016_avg_people_df = usnip.calculate_avg_people_by_num(_2016_data[[9]].loc[3:])
+    usnip._2017_avg_people_df = usnip.calculate_avg_people_by_num(_2017_data[[7]].loc[3:])
+
     usnip.create_all_avg_people_df()
 
 
@@ -43,11 +48,12 @@ if __name__ == '__main__':
     _2016_data = pd.read_excel('2016.xlsx', header=None, sheet_name='信息表')
     _2017_data = pd.read_excel('2017.xlsx', header=None)
 
+    # 计算关键字
     # get_keyword_diff()
     # get_total_key_word()
+    # 绘制词云
     # draw_word_cloud()
-    get_avg_people()
-    # 计算平均项目人数
-
-
+    # 计算项目平均参与人数
+    # get_avg_people_by_univer()
+    get_avg_people_by_num()
     print('finish')
