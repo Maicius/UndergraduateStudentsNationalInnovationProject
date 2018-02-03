@@ -210,11 +210,21 @@ class USNIP(object):
         data.columns = ['university', 'money']
         unique_university = pd.unique(data['university'].values)
         for university in unique_university:
-            avg_people = data[data.university == university]['money'].astype(int).mean()
-            university_tuple.append((university, round(avg_people, 0)))
+            total_money= data[data.university == university]['money'].astype(int).sum()
+            university_tuple.append((university, round(total_money, 0)))
         university_df = pd.DataFrame(university_tuple)
-        university_df.columns = ['大学', '平均人数']
-        university_df.sort_values(by='平均人数', inplace=True, ascending=True)
+        university_df.columns = ['大学', '总经费']
+        university_df.sort_values(by='总经费', inplace=True, ascending=False)
         university_df = university_df.reset_index().drop(['index'], axis=1)
         print(university_df)
         return university_df
+
+    def draw_simple_bar(self, data):
+        total_width, n = 0.8, 2  # 有多少个类型，只需更改n即可
+        width = total_width / n
+        x = np.arange(2)
+        x = x - (total_width - width) / 2
+        plt.bar(x, data, width=width, label='总经费', color='#0072BC')
+        custom_font = mpl.font_manager.FontProperties(fname='/System/Library/Fonts/Hiragino Sans GB.ttc')
+        plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.03), fancybox=True, ncol=5, prop=custom_font)
+        plt.show()

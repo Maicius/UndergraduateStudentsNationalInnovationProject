@@ -41,6 +41,22 @@ def draw_word_cloud():
     usnip.drawWordCloud(usnip._2017_keyword, 'result/2017_word_cloud.jpg')
 
 
+def get_total_money():
+    _2015_df = usnip.calculate_money(_2015_data[[1, 11]].loc[3:])
+    _2016_df = usnip.calculate_money(_2016_data[[3, 15]].loc[3:])
+    total_df = pd.concat([_2015_df, _2016_df], axis=1)
+    total_df.columns = ['2015高校', '2015经费', '2016高校', '2016经费']
+    print(total_df)
+    total_df.to_excel('2015-2016国家级大创经费情况.xlsx')
+
+    sum_money_df = pd.DataFrame(total_df.sum(axis=0))
+    sum_money_df.drop(['2015高校', '2016高校'], axis=0, inplace=True)
+    sum_money_df.to_excel('2015-2016国家级大创总经费.xlsx')
+    print(sum_money_df.values)
+    usnip.draw_simple_bar(sum_money_df.values)
+    pass
+
+
 if __name__ == '__main__':
     usnip = USNIP()
     # 获取数据
@@ -55,5 +71,7 @@ if __name__ == '__main__':
     # draw_word_cloud()
     # 计算项目平均参与人数
     # get_avg_people_by_univer()
-    get_avg_people_by_num()
+    # get_avg_people_by_num()
+
+    get_total_money()
     print('finish')
