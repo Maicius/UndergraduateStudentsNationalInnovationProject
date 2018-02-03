@@ -5,7 +5,7 @@ from wordcloud import WordCloud, ImageColorGenerator, STOPWORDS
 from scipy.misc import imread
 import matplotlib.pyplot as plt
 import numpy as np
-
+import matplotlib as mpl
 
 def count_frequency(data_arr):
     _keyword_dict = {}
@@ -170,31 +170,30 @@ class USNIP(object):
         num_data_2017_df = self.groupy_by_avg_people(num_data, num_data._2017_people.astype(int), '_2017_num')
         num_data_df = pd.concat([num_data_2015_df, num_data_2016_df, num_data_2017_df], axis=0).astype(int)
         num_data_df.columns = ['less_2', '_3_5', 'more_5', 'sum_val']
-        num_data_df.to_excel('项目参与人数统计表.xlsx')
+        num_data_df.to_excel('result/项目参与人数统计表.xlsx')
         self.do_draw_mat(data_df=num_data_df)
 
     def do_draw_mat(self, data_df):
         size = 3
+        custom_font = mpl.font_manager.FontProperties(fname='/System/Library/Fonts/Hiragino Sans GB.ttc')
         a = data_df['less_2'].values
         b = data_df['_3_5'].values
         c = data_df['more_5'].values
-        d = data_df['sum_val'].values
         x = np.arange(size)
         total_width, n = 0.8, 3  # 有多少个类型，只需更改n即可
         width = total_width / n
         x = x - (total_width - width) / 2
         year = ['2015', '2016', '2017']
-        plt.title('近三年部属高校大创项目人数统计图')
+        plt.title('近三年部属高校大创项目人数统计图', fontproperties=custom_font)
         plt.bar(x, a, width=width, label='小于等于2人', color='#0072BC')
-
         plt.bar(x + width, b, width=width, label='3至5人', color='#ED1C24')
         plt.bar(x + 2 * width, c, width=width, label='大于5人')
         for i in range(len(a)):
             plt.text(x[i] + 0.5 * width, a[i] + 0.05, a[i], ha='center', va='bottom')
             plt.text(x[i] + 1.5 * width, b[i] + 0.05, b[i], ha='center', va='bottom')
             plt.text(x[i] + 2.5 * width, c[i] + 0.05, c[i], ha='center', va='bottom')
-        plt.xticks(x + 1.5 * width, year)
-        plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.03), fancybox=True, ncol=5)
+        plt.xticks(x + 1.5 * width, year, fontproperties=custom_font)
+        plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.03), fancybox=True, ncol=5, prop=custom_font)
         plt.show()
 
     def groupy_by_avg_people(self, num_data, row_num, col_num):
@@ -205,3 +204,17 @@ class USNIP(object):
         num_data_df = pd.concat([small, middle, big], axis=1).astype(int)
         num_data_df['sum_val'] = num_data_df.sum(axis=1)
         return num_data_df
+
+    def calculate_money(self, data):
+        university_tuple = []
+        data.columns = ['university', 'money']
+        unique_university = pd.unique(data['university'].values)
+        for university in unique_university:
+            avg_people = data[data.university == university]['money'].astype(int).mean()
+            university_tuple.append((university, round(avg_people, 0)))
+        university_df = pd.DataFrame(university_tuple)
+        university_df.columns = ['大学', '平均人数']
+        university_df.sort_values(by='平均人数', inplace=True, ascending=True)
+        university_df = university_df.reset_index().drop(['index'], axis=1)
+        print(university_df)
+        return university_df
