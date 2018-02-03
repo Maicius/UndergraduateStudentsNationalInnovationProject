@@ -89,7 +89,7 @@ class USNIP(object):
         self._2015_avg_people_df.columns = ['2015高校', '2015平均人数']
         self._2016_avg_people_df.columns = ['2016高校', '2016平均人数']
         self._2017_avg_people_df.columns = ['2017高校', '2017平均人数']
-        all_year_df = pd.concat([self._2015_avg_people_df, self._2016_avg_people_df,  self._2017_avg_people_df], axis=1)
+        all_year_df = pd.concat([self._2015_avg_people_df, self._2016_avg_people_df, self._2017_avg_people_df], axis=1)
         all_year_df.to_excel('result/平均人数表.xlsx')
         print('Finish')
 
@@ -186,8 +186,13 @@ class USNIP(object):
         year = ['2015', '2016', '2017']
         plt.title('近三年部署高校大创项目人数统计图')
         plt.bar(x, a, width=width, label='小于等于2人', color='#0072BC')
+
         plt.bar(x + width, b, width=width, label='3至5人', color='#ED1C24')
         plt.bar(x + 2 * width, c, width=width, label='大于5人')
+        for i in range(len(a)):
+            plt.text(x, a[i] + 0.05, a[i], ha='center', va='bottom')
+            plt.text(x + width, b[i] + 0.05, b[i], ha='center', va='top')
+            plt.text(x + 2 * width, c[i] + 0.05, c[i], ha='center', va='top')
         plt.xticks(x + 1.5 * width, year)
 
         plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.03), fancybox=True, ncol=5)
