@@ -184,17 +184,16 @@ class USNIP(object):
         width = total_width / n
         x = x - (total_width - width) / 2
         year = ['2015', '2016', '2017']
-        plt.title('近三年部署高校大创项目人数统计图')
+        plt.title('近三年部属高校大创项目人数统计图')
         plt.bar(x, a, width=width, label='小于等于2人', color='#0072BC')
 
         plt.bar(x + width, b, width=width, label='3至5人', color='#ED1C24')
         plt.bar(x + 2 * width, c, width=width, label='大于5人')
         for i in range(len(a)):
-            plt.text(x, a[i] + 0.05, a[i], ha='center', va='bottom')
-            plt.text(x + width, b[i] + 0.05, b[i], ha='center', va='top')
-            plt.text(x + 2 * width, c[i] + 0.05, c[i], ha='center', va='top')
+            plt.text(x[i] + 0.5 * width, a[i] + 0.05, a[i], ha='center', va='bottom')
+            plt.text(x[i] + 1.5 * width, b[i] + 0.05, b[i], ha='center', va='bottom')
+            plt.text(x[i] + 2.5 * width, c[i] + 0.05, c[i], ha='center', va='bottom')
         plt.xticks(x + 1.5 * width, year)
-
         plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.03), fancybox=True, ncol=5)
         plt.show()
 
