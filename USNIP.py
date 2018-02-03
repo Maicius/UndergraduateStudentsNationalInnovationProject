@@ -4,8 +4,7 @@ import pandas as pd
 from wordcloud import WordCloud, ImageColorGenerator, STOPWORDS
 from scipy.misc import imread
 import matplotlib.pyplot as plt
-
-jieba.load_userdict("userdict.txt")
+import numpy as np
 
 
 def count_frequency(data_arr):
@@ -35,7 +34,8 @@ class USNIP(object):
 
     def calculate_keyword(self, data):
         project_names = data.sum(axis=0).values[0]
-
+        # 载入自定义字典
+        jieba.load_userdict("userdict.txt")
         _keyword = list(jieba.cut(project_names, cut_all=False))
         _keyword = filter(self.remove_waste, _keyword)
         _keyword_dict = count_frequency(_keyword)
@@ -89,19 +89,18 @@ class USNIP(object):
         self._2015_avg_people_df.columns = ['2015高校', '2015平均人数']
         self._2016_avg_people_df.columns = ['2016高校', '2016平均人数']
         self._2017_avg_people_df.columns = ['2017高校', '2017平均人数']
-        all_year_df = pd.concat([self._2015_avg_people_df, self._2016_avg_people_df], axis=1)
-        all_year_df = pd.concat([all_year_df, self._2017_avg_people_df], axis=1)
+        all_year_df = pd.concat([self._2015_avg_people_df, self._2016_avg_people_df,  self._2017_avg_people_df], axis=1)
         all_year_df.to_excel('result/平均人数表.xlsx')
         print('Finish')
 
     def create_all_avg_people_df_by_num(self):
-        self._2015_avg_people_df.columns = ['项目参与人数', '数量']
-        self._2016_avg_people_df.columns = ['项目参与人数', '数量']
-        self._2017_avg_people_df.columns = ['项目参与人数', '数量']
-        all_year_df = pd.concat([self._2015_avg_people_df, self._2016_avg_people_df], axis=1)
-        all_year_df = pd.concat([all_year_df, self._2017_avg_people_df], axis=1)
+        self._2015_avg_people_df.columns = ['2015项目参与人数', '2015数量']
+        self._2016_avg_people_df.columns = ['2016项目参与人数', '2016数量']
+        self._2017_avg_people_df.columns = ['2017项目参与人数', '2017数量']
+        all_year_df = pd.concat([self._2015_avg_people_df, self._2016_avg_people_df, self._2017_avg_people_df], axis=1)
         all_year_df.to_excel('result/项目参与人数表.xlsx')
         print('Finish')
+        return all_year_df
 
     def drawWordCloud(self, word_text, filename):
         mask = imread('pic.png')
@@ -163,3 +162,42 @@ class USNIP(object):
         avg_people_df = avg_people_df.reset_index().drop(['index'], axis=1)
         print(avg_people_df)
         return avg_people_df
+
+    def draw_picture(self, num_data):
+        num_data.columns = ['_2015_people', '_2015_num', '_2016_people', '_2016_num', '_2017_people', '_2017_num']
+        num_data_2015_df = self.groupy_by_avg_people(num_data, num_data._2015_people, '_2015_num')
+        num_data_2016_df = self.groupy_by_avg_people(num_data, num_data._2016_people, '_2016_num')
+        num_data_2017_df = self.groupy_by_avg_people(num_data, num_data._2017_people.astype(int), '_2017_num')
+        num_data_df = pd.concat([num_data_2015_df, num_data_2016_df, num_data_2017_df], axis=0).astype(int)
+        num_data_df.columns = ['less_2', '_3_5', 'more_5', 'sum_val']
+        num_data_df.to_excel('项目参与人数统计表.xlsx')
+        self.do_draw_mat(data_df=num_data_df)
+
+    def do_draw_mat(self, data_df):
+        size = 3
+        a = data_df['less_2'].values
+        b = data_df['_3_5'].values
+        c = data_df['more_5'].values
+        d = data_df['sum_val'].values
+        x = np.arange(size)
+        total_width, n = 0.8, 3  # 有多少个类型，只需更改n即可
+        width = total_width / n
+        x = x - (total_width - width) / 2
+        year = ['2015', '2016', '2017']
+        plt.title('近三年部署高校大创项目人数统计图')
+        plt.bar(x, a, width=width, label='小于等于2人', color='#0072BC')
+        plt.bar(x + width, b, width=width, label='3至5人', color='#ED1C24')
+        plt.bar(x + 2 * width, c, width=width, label='大于5人')
+        plt.xticks(x + 1.5 * width, year)
+
+        plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.03), fancybox=True, ncol=5)
+        plt.show()
+
+    def groupy_by_avg_people(self, num_data, row_num, col_num):
+        small = num_data[row_num <= 2][[col_num]].sum(axis=0)
+        middle = num_data[row_num <= 5][[col_num]].sum(axis=0) - small
+        big = num_data[row_num > 5][[col_num]].sum(axis=0)
+        print(small, middle, big)
+        num_data_df = pd.concat([small, middle, big], axis=1).astype(int)
+        num_data_df['sum_val'] = num_data_df.sum(axis=1)
+        return num_data_df

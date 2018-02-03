@@ -30,7 +30,8 @@ def get_avg_people_by_num():
     usnip._2015_avg_people_df = usnip.calculate_avg_people_by_num(_2015_data[[7]].loc[3:])
     usnip._2016_avg_people_df = usnip.calculate_avg_people_by_num(_2016_data[[9]].loc[3:])
     usnip._2017_avg_people_df = usnip.calculate_avg_people_by_num(_2017_data[[7]].loc[3:])
-    usnip.create_all_avg_people_df_by_num()
+    num_data = usnip.create_all_avg_people_df_by_num()
+    usnip.draw_picture(num_data)
 
 
 def draw_word_cloud():
