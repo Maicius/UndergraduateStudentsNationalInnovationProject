@@ -70,7 +70,8 @@ if __name__ == '__main__':
     # 绘制词云
     # draw_word_cloud()
     # 计算项目平均参与人数
-    # get_avg_people_by_univer()
+    get_avg_people_by_univer()
+
     # get_avg_people_by_num()
 
     get_total_money()
